@@ -30,11 +30,11 @@ public:
     ~PNGSprite();
 
 private:
-	uint8_t color_pallete_index;
+    uint8_t color_pallete_index;
     uint8_t tile_table_index;
 
-	void Fill_color_pallete(PPU466& ppu);
-	void Register_PNG(PPU466& ppu, std::array< PPU466::Tile, 16 * 16 >& tile_table, uint8_t priority);
+    void Fill_color_pallete(PPU466& ppu);
+    void Register_PNG(PPU466& ppu, std::array< PPU466::Tile, 16 * 16 >& tile_table, uint8_t priority);
     uint8_t Find_color(const PPU466::Palette& pallete, const glm::u8vec4& color);
     void Fill_Tile(const PPU466::Palette& pallete, PPU466::Tile& tile, uint8_t row, uint8_t col);
     void Fill_Sprite(uint8_t t_index, uint8_t prority);
