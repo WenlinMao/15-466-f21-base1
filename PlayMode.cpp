@@ -102,6 +102,18 @@ PlayMode::PlayMode() {
 		glm::u8vec4(0x00, 0x00, 0x00, 0x00),
 	};
 
+
+	std::string path = "../heart.png"; 
+	heart_pic = PNGSprite(5, 16, glm::uvec2(128, 120));
+	PNGLoader::load(path, heart_pic);
+	heart_pic.Initialize(ppu, 0);
+
+	// ppu.palette_table[5] = {
+	// 	glm::u8vec4(0xff, 0x00, 0x00, 0xff),
+	// 	glm::u8vec4(0xff, 0x88, 0xff, 0xff),
+	// 	glm::u8vec4(0xff, 0x00, 0x00, 0xff),
+	// 	glm::u8vec4(0xff, 0x00, 0x00, 0xff),
+	// };
 }
 
 PlayMode::~PlayMode() {
@@ -169,41 +181,48 @@ void PlayMode::update(float elapsed) {
 void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	//--- set ppu state based on game state ---
 
-	//background color will be some hsv-like fade:
-	ppu.background_color = glm::u8vec4(
-		std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 0.0f / 3.0f) ) ) ))),
-		std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 1.0f / 3.0f) ) ) ))),
-		std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 2.0f / 3.0f) ) ) ))),
-		0xff
-	);
+	// //background color will be some hsv-like fade:
+	// ppu.background_color = glm::u8vec4(
+	// 	std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 0.0f / 3.0f) ) ) ))),
+	// 	std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 1.0f / 3.0f) ) ) ))),
+	// 	std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 2.0f / 3.0f) ) ) ))),
+	// 	0xff
+	// );
 
-	//tilemap gets recomputed every frame as some weird plasma thing:
-	//NOTE: don't do this in your game! actually make a map or something :-)
-	for (uint32_t y = 0; y < PPU466::BackgroundHeight; ++y) {
-		for (uint32_t x = 0; x < PPU466::BackgroundWidth; ++x) {
-			//TODO: make weird plasma thing
-			ppu.background[x+PPU466::BackgroundWidth*y] = ((x+y)%16);
-		}
-	}
+	// //tilemap gets recomputed every frame as some weird plasma thing:
+	// //NOTE: don't do this in your game! actually make a map or something :-)
+	// for (uint32_t y = 0; y < PPU466::BackgroundHeight; ++y) {
+	// 	for (uint32_t x = 0; x < PPU466::BackgroundWidth; ++x) {
+	// 		//TODO: make weird plasma thing
+	// 		ppu.background[x+PPU466::BackgroundWidth*y] = ((x+y)%16);
+	// 	}
+	// }
 
-	//background scroll:
-	ppu.background_position.x = int32_t(-0.5f * player_at.x);
-	ppu.background_position.y = int32_t(-0.5f * player_at.y);
+	// //background scroll:
+	// ppu.background_position.x = int32_t(-0.5f * player_at.x);
+	// ppu.background_position.y = int32_t(-0.5f * player_at.y);
 
-	//player sprite:
-	ppu.sprites[0].x = int32_t(player_at.x);
-	ppu.sprites[0].y = int32_t(player_at.y);
-	ppu.sprites[0].index = 32;
-	ppu.sprites[0].attributes = 7;
+	// //player sprite:
+	// ppu.sprites[0].x = int32_t(player_at.x);
+	// ppu.sprites[0].y = int32_t(player_at.y);
+	// ppu.sprites[0].index = 32;
+	// ppu.sprites[0].attributes = 7;
 
 	//some other misc sprites:
-	for (uint32_t i = 1; i < 63; ++i) {
+	for (uint32_t i = 17; i < 63; ++i) {
 		float amt = (i + 2.0f * background_fade) / 62.0f;
 		ppu.sprites[i].x = int32_t(0.5f * PPU466::ScreenWidth + std::cos( 2.0f * M_PI * amt * 5.0f + 0.01f * player_at.x) * 0.4f * PPU466::ScreenWidth);
-		ppu.sprites[i].y = int32_t(0.5f * PPU466::ScreenHeight + std::sin( 2.0f * M_PI * amt * 3.0f + 0.01f * player_at.y) * 0.4f * PPU466::ScreenWidth);
+		//ppu.sprites[i].y = int32_t(0.5f * PPU466::ScreenHeight + std::sin( 2.0f * M_PI * amt * 3.0f + 0.01f * player_at.y) * 0.4f * PPU466::ScreenWidth);
+		ppu.sprites[i].y = 240;
 		ppu.sprites[i].index = 32;
 		ppu.sprites[i].attributes = 6;
 		if (i % 2) ppu.sprites[i].attributes |= 0x80; //'behind' bit
+	}
+
+	for (uint32_t i = 1; i < 17; i++) {
+		ppu.sprites[i] = heart_pic.png_sprites[i-1];
+
+		//std::cout << (int)ppu.sprites[i].x << " " << (int)ppu.sprites[i].y << std::endl;
 	}
 
 	//--- actually draw ---

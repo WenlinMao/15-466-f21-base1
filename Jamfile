@@ -114,6 +114,8 @@ if $(OS) = NT { #Windows
 
 #Store the names of all the .cpp files to build into a variable:
 GAME_NAMES =
+	PNGSprite
+	PNGLoader
 	PlayMode
 	PPU466
 	main
@@ -123,8 +125,6 @@ GAME_NAMES =
 	data_path
 	Mode
 	GL
-	PNGLoader
-	PNGSprite
 	;
 
 LOCATE_TARGET = objs ; #put objects in 'objs' directory

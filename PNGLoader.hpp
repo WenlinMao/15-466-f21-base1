@@ -14,8 +14,9 @@
 #include "data_path.hpp"
 
 class PNGLoader {
+public:
     PNGLoader();
     ~PNGLoader();
 
-    void load(const std::string & path, PNGSprite& sprite);
+    static void load(const std::string & path, PNGSprite& sprite);
 };

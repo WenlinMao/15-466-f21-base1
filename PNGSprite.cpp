@@ -1,4 +1,9 @@
 #include "PNGSprite.hpp"
+#include <iostream>
+
+PNGSprite::PNGSprite() {}
+PNGSprite::~PNGSprite() {}
+
 
 void PNGSprite::Initialize(PPU466& ppu, uint8_t priority) {
 	Fill_color_pallete(ppu);
@@ -11,13 +16,18 @@ void PNGSprite::Fill_color_pallete(PPU466& ppu) {
 	for (int i=0; i < pic.size(); i++) {
 		bool in_pallete = false;
 		for (int j=0; j <= pallete_index; j++) {
+			// if (pic[i].x == pallete[j].x
+			// 	&& pic[i].y == pallete[j].y
+			// 	&& pic[i].z == pallete[j].z
 			if (pic[i] == pallete[j]) {
 				in_pallete = true;
 				break;
 			}
 		}
-		if (!in_pallete)
+		if (!in_pallete){ 
 			pallete[pallete_index++] = pic[i];
+			std::cout << (int)pic[i][0] << " " << (int)pic[i][1] << " " << (int)pic[i][2] << " " << (int)pic[i][3] << std::endl;
+		}
 
 		// Max size of pallete is 4
 		if (pallete_index >= 4)
@@ -58,9 +68,10 @@ uint8_t PNGSprite::Find_color(const PPU466::Palette& pallete, const glm::u8vec4&
 void PNGSprite::Fill_Tile(const PPU466::Palette& pallete, PPU466::Tile& tile, uint8_t row, uint8_t col) {
 	for (uint8_t x = 0; x < 8; x++) {
 		for (uint8_t y = 0; y < 8; y++) {
-			int pic_index = (row * 8 + x) * PNG_SIZE + (col * 8 + y);
+			//int pic_index = (row * 8 + x) * PNG_SIZE + (col * 8 + y);
+			int pic_index = (row * PNG_SIZE/8 + col) * 64 + 8*x + y;
 			uint8_t color_index = Find_color(pallete, pic[pic_index]);
-			Set_Tile_Bit(tile, x, y, color_index);
+			Set_Tile_Bit(tile, y, x, color_index);
 		}
 	}
 }
@@ -78,7 +89,9 @@ void PNGSprite::Fill_Sprite(uint8_t t_index, uint8_t prority, uint8_t row, uint8
 	sprite.x = pos.x - PNG_SIZE/2 + col * 8 + 8 / 2;
 	sprite.y = pos.y - PNG_SIZE/2 + row * 8 + 8 / 2;
 
-	assert(png_sprites_index >= (PNG_SIZE * PNG_SIZE) / (8 * 8));
+	//std::cout << (int)sprite.x << " " << (int)sprite.y << std::endl; 
+
+	assert(png_sprites_index < (PNG_SIZE * PNG_SIZE) / (8 * 8));
 	png_sprites[png_sprites_index++] = sprite;	
 }
 
