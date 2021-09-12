@@ -187,6 +187,7 @@ void PPU466::draw(glm::uvec2 const &drawable_size) const {
 							info & 0xff, //extract tile index bits
 							(info >> 8) & 0x07 //extract palette index bits
 						);
+						//std::cout << 
 					}
 				}
 

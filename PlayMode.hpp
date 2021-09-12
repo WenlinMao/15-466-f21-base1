@@ -30,6 +30,7 @@ struct PlayMode : Mode {
 	float background_fade = 0.0f;
 
 	PNGSprite heart_pic;
+	PNGSprite background_pic;
 	//PNGLoader loader;
 
 	//player position:
