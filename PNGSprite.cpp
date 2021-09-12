@@ -5,20 +5,62 @@ PNGSprite::PNGSprite() {}
 PNGSprite::~PNGSprite() {}
 
 
-void PNGSprite::Initialize(PPU466& ppu, uint8_t priority) {
-	Fill_color_pallete(ppu);
+void PNGSprite::Initialize_PNG(PPU466& ppu, uint8_t priority) {
+	Fill_color_pallete(ppu, false);
 	Register_PNG(ppu, priority);
 }
 
-void PNGSprite::Fill_color_pallete(PPU466& ppu) {
+void PNGSprite::Initialize_Background(PPU466& ppu) {
+	Fill_color_pallete(ppu, true);
+	Register_Background(ppu);
+}
+
+void PNGSprite::Register_Background(PPU466& ppu) {
+	PPU466::Palette& pallete = ppu.palette_table[background_color_pallete_index];
+	std::array<PPU466::Tile, 16 * 16>& tile_table = ppu.tile_table;
+
+	// Num of tiles for each background col/row
+	uint8_t width = BACKGROUND_SIZE / 8;
+	uint8_t height = BACKGROUND_SIZE / 8;
+
+	// For each background file
+	for (uint8_t i = 0; i < height; i++)
+	{
+		for (uint8_t j = 0; j < width; j++)
+		{
+			uint8_t curr_table_index = background_tile_table_index + i * width + j;
+			assert(curr_table_index < 16 * 16);
+			PPU466::Tile& tile = tile_table[curr_table_index];
+			for (uint8_t x = 0; x < 8; x++)
+			{
+				for (uint8_t y = 0; y < 8; y++)
+				{
+					int pic_index = (i * 8 + x) * BACKGROUND_SIZE + (j * 8 + y);
+					uint8_t color_index = Find_color(pallete, pic[pic_index]);
+					Set_Tile_Bit(tile, x, y, color_index);
+				}
+			}
+		}
+	}
+
+	// Set ppu's background value
+	uint16_t background_value = background_tile_table_index << 7;
+	for (int i=0; i<ppu.BackgroundHeight; i++) {
+		for (int j = 0; j < ppu.BackgroundWidth; j++) {
+			int idx = i * ppu.BackgroundWidth + j;
+			int tile_idx = (i % 8) * 8 + (j % 8) + background_tile_table_index;
+			ppu.background[idx] |= tile_idx;
+		}
+	}
+}
+
+void PNGSprite::Fill_color_pallete(PPU466& ppu, bool is_background) {
 	uint8_t pallete_index = 0;
-	PPU466::Palette& pallete = ppu.palette_table[color_pallete_index];
+	uint8_t idx = is_background ? background_color_pallete_index : color_pallete_index;
+	PPU466::Palette& pallete = ppu.palette_table[idx];
 	for (int i=0; i < pic.size(); i++) {
 		bool in_pallete = false;
 		for (int j=0; j <= pallete_index; j++) {
-			// if (pic[i].x == pallete[j].x
-			// 	&& pic[i].y == pallete[j].y
-			// 	&& pic[i].z == pallete[j].z
 			if (pic[i] == pallete[j]) {
 				in_pallete = true;
 				break;
@@ -26,7 +68,7 @@ void PNGSprite::Fill_color_pallete(PPU466& ppu) {
 		}
 		if (!in_pallete){ 
 			pallete[pallete_index++] = pic[i];
-			std::cout << (int)pic[i][0] << " " << (int)pic[i][1] << " " << (int)pic[i][2] << " " << (int)pic[i][3] << std::endl;
+			//std::cout << (int)pic[i][0] << " " << (int)pic[i][1] << " " << (int)pic[i][2] << " " << (int)pic[i][3] << std::endl;
 		}
 
 		// Max size of pallete is 4
@@ -46,7 +88,6 @@ void PNGSprite::Register_PNG(PPU466& ppu, uint8_t priority) {
 	// For each png file
 	for (uint8_t i=0; i<height; i++){ 
 		for (uint8_t j=0; j<width; j++) {
-
 			// For each 8x8 tile
 			uint8_t curr_table_index = tile_table_index + i * width + j;
 			PPU466::Tile& tile = tile_table[curr_table_index];

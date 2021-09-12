@@ -106,7 +106,7 @@ PlayMode::PlayMode() {
 	std::string path = "../heart.png"; 
 	heart_pic = PNGSprite(5, 16, glm::uvec2(128, 120));
 	PNGLoader::load(path, heart_pic);
-	heart_pic.Initialize(ppu, 0);
+	heart_pic.Initialize_PNG(ppu, 0);
 
 	// ppu.palette_table[5] = {
 	// 	glm::u8vec4(0xff, 0x00, 0x00, 0xff),
