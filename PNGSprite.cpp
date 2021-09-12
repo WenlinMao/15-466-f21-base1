@@ -68,10 +68,10 @@ uint8_t PNGSprite::Find_color(const PPU466::Palette& pallete, const glm::u8vec4&
 void PNGSprite::Fill_Tile(const PPU466::Palette& pallete, PPU466::Tile& tile, uint8_t row, uint8_t col) {
 	for (uint8_t x = 0; x < 8; x++) {
 		for (uint8_t y = 0; y < 8; y++) {
-			//int pic_index = (row * 8 + x) * PNG_SIZE + (col * 8 + y);
-			int pic_index = (row * PNG_SIZE/8 + col) * 64 + 8*x + y;
+			int pic_index = (row * 8 + x) * PNG_SIZE + (col * 8 + y);
+			//int pic_index = (row * PNG_SIZE/8 + col) * 64 + 8*x + y;
 			uint8_t color_index = Find_color(pallete, pic[pic_index]);
-			Set_Tile_Bit(tile, y, x, color_index);
+			Set_Tile_Bit(tile, x, y, color_index);
 		}
 	}
 }
