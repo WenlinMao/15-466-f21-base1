@@ -1,5 +1,10 @@
 #include "PNGSprite.hpp"
 
+void PNGSprite::Initialize(PPU466& ppu, uint8_t priority) {
+	Fill_color_pallete(ppu);
+	Register_PNG(ppu, priority);
+}
+
 void PNGSprite::Fill_color_pallete(PPU466& ppu) {
 	uint8_t pallete_index = 0;
 	PPU466::Palette& pallete = ppu.palette_table[color_pallete_index];
@@ -12,30 +17,31 @@ void PNGSprite::Fill_color_pallete(PPU466& ppu) {
 			}
 		}
 		if (!in_pallete)
-			pallete[pallete_index] = pic[i];
+			pallete[pallete_index++] = pic[i];
 
 		// Max size of pallete is 4
-		if (pallete_index > 4)
+		if (pallete_index >= 4)
 			return;
 	}
 }
 
-void PNGSprite::Register_PNG(PPU466& ppu, std::array<PPU466::Tile, 16 * 16>& tile_table, uint8_t priority) {
+void PNGSprite::Register_PNG(PPU466& ppu, uint8_t priority) {
 	PPU466::Palette& pallete = ppu.palette_table[color_pallete_index];
-	
+	std::array<PPU466::Tile, 16 * 16>& tile_table = ppu.tile_table;
+
 	// Num of tiles for each png col/row
 	uint8_t width = PNG_SIZE / 8;
 	uint8_t height = PNG_SIZE / 8;
 
 	// For each png file
-	for (uint8_t i=0; i<width; i++){ 
-		for (uint8_t j=0; j<height; j++) {
+	for (uint8_t i=0; i<height; i++){ 
+		for (uint8_t j=0; j<width; j++) {
 
 			// For each 8x8 tile
 			uint8_t curr_table_index = tile_table_index + i * width + j;
 			PPU466::Tile& tile = tile_table[curr_table_index];
 			Fill_Tile(pallete, tile, i, j);
-			Fill_Sprite(curr_table_index, priority);
+			Fill_Sprite(curr_table_index, priority, i, j);
 		}
 	}
 }
@@ -59,7 +65,7 @@ void PNGSprite::Fill_Tile(const PPU466::Palette& pallete, PPU466::Tile& tile, ui
 	}
 }
 
-void PNGSprite::Fill_Sprite(uint8_t t_index, uint8_t prority) {
+void PNGSprite::Fill_Sprite(uint8_t t_index, uint8_t prority, uint8_t row, uint8_t col) {
 	PPU466::Sprite sprite;
 
 	sprite.index = t_index;
@@ -68,7 +74,9 @@ void PNGSprite::Fill_Sprite(uint8_t t_index, uint8_t prority) {
 	sprite.attributes = prority << 7;
 	sprite.attributes |= color_pallete_index;
 
-	// TODO:Handle Sprite position offset
+	// Update related pos
+	sprite.x = pos.x - PNG_SIZE/2 + col * 8 + 8 / 2;
+	sprite.y = pos.y - PNG_SIZE/2 + row * 8 + 8 / 2;
 
 	assert(png_sprites_index >= (PNG_SIZE * PNG_SIZE) / (8 * 8));
 	png_sprites[png_sprites_index++] = sprite;	
