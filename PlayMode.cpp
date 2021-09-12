@@ -108,7 +108,7 @@ PlayMode::PlayMode() {
 
 
 	std::string png_path = "../heart.png"; 
-	heart_pic = PNGSprite(1, 16, glm::uvec2(128, 120));
+	heart_pic = PNGSprite(0, 0, glm::uvec2(128, 120));
 	PNGLoader::load(png_path, heart_pic);
 	heart_pic.Initialize_PNG(ppu, 0);
 
@@ -116,6 +116,8 @@ PlayMode::PlayMode() {
 	background_pic = PNGSprite();
 	PNGLoader::load(background_path, background_pic);
 	background_pic.Initialize_Background(ppu);
+
+
 }
 
 PlayMode::~PlayMode() {
@@ -199,6 +201,13 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	// 		ppu.background[x+PPU466::BackgroundWidth*y] = ((x+y)%16);
 	// 	}
 	// }
+
+	//for (uint32_t y = 0; y < PPU466::BackgroundHeight; ++y) {
+	// 	for (uint32_t x = 0; x < PPU466::BackgroundWidth; ++x) {
+	// 		//TODO: make weird plasma thing
+	// 		ppu.background[x+PPU466::BackgroundWidth*y] = 0;
+	// 	}
+	//}
 
 	// //background scroll:
 	// ppu.background_position.x = int32_t(-0.5f * player_at.x);

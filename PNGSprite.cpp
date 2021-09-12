@@ -1,5 +1,6 @@
 #include "PNGSprite.hpp"
 #include <iostream>
+#include <bitset>
 
 PNGSprite::PNGSprite() {}
 PNGSprite::~PNGSprite() {}
@@ -44,12 +45,13 @@ void PNGSprite::Register_Background(PPU466& ppu) {
 	}
 
 	// Set ppu's background value
-	uint16_t background_value = background_tile_table_index << 7;
+	uint16_t background_value = background_color_pallete_index << 8;
 	for (int i=0; i<ppu.BackgroundHeight; i++) {
-		for (int j = 0; j < ppu.BackgroundWidth; j++) {
+		for (int j=0; j < ppu.BackgroundWidth; j++) {
 			int idx = i * ppu.BackgroundWidth + j;
 			int tile_idx = (i % 8) * 8 + (j % 8) + background_tile_table_index;
-			ppu.background[idx] |= tile_idx;
+			ppu.background[idx] = background_value | tile_idx;
+			//std::cout << "background actual value = " << std::bitset<16>((int)ppu.background[idx]) << std::endl;
 		}
 	}
 }
@@ -57,6 +59,7 @@ void PNGSprite::Register_Background(PPU466& ppu) {
 void PNGSprite::Fill_color_pallete(PPU466& ppu, bool is_background) {
 	uint8_t pallete_index = 0;
 	uint8_t idx = is_background ? background_color_pallete_index : color_pallete_index;
+	//std::cout << "color pallete idx = " << (int)idx << std::endl;
 	PPU466::Palette& pallete = ppu.palette_table[idx];
 	for (int i=0; i < pic.size(); i++) {
 		bool in_pallete = false;
