@@ -26,6 +26,7 @@ public:
 
     void Initialize_PNG(PPU466& ppu, uint8_t priority);
     void Initialize_Background(PPU466& ppu);
+    void Update_Pos(glm::uvec2 new_pos);
 
     // Pos is at the middle of 4x4 tiles
     glm::uvec2 pos;
@@ -35,6 +36,7 @@ public:
     //Only load 32x32 png, which contains 16 tiles/sprites
     std::array<PPU466::Sprite, (PNG_SIZE*PNG_SIZE) / (8 * 8)> png_sprites;
     int png_sprites_index = 0;
+
 
 private:
     uint8_t color_pallete_index;

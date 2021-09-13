@@ -120,6 +120,22 @@ void PNGSprite::Fill_Tile(const PPU466::Palette& pallete, PPU466::Tile& tile, ui
 	}
 }
 
+void PNGSprite::Update_Pos(glm::uvec2 new_pos) {
+	pos = new_pos;
+	// Num of tiles for each png col/row
+	uint8_t width = PNG_SIZE / 8;
+	uint8_t height = PNG_SIZE / 8;
+
+	int sprite_idx = 0;
+	for (uint8_t i = 0; i < height; i++) {
+		for (uint8_t j = 0; j < width; j++) {
+			png_sprites[sprite_idx].x = pos.x - PNG_SIZE / 2 + j * 8 + 8 / 2;
+			png_sprites[sprite_idx].y = pos.y - PNG_SIZE / 2 + i * 8 + 8 / 2;
+			sprite_idx++;
+		}
+	}
+}
+
 void PNGSprite::Fill_Sprite(uint8_t t_index, uint8_t prority, uint8_t row, uint8_t col) {
 	PPU466::Sprite sprite;
 
