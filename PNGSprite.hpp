@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "PPU466.hpp"
-
+#include <glm/gtc/epsilon.hpp>
 
 
 #define PNG_SIZE 32
@@ -21,7 +21,8 @@
 class PNGSprite {
 public:
     PNGSprite();
-    PNGSprite(uint8_t c_idx, uint8_t t_idx, glm::uvec2 default_pos) : color_pallete_index(c_idx), tile_table_index(t_idx), pos(default_pos) {}
+    PNGSprite(uint8_t c_idx, uint8_t t_idx, glm::uvec2 default_pos) : 
+        pos(default_pos), color_pallete_index(c_idx), tile_table_index(t_idx) {}
     ~PNGSprite();
 
     void Initialize_PNG(PPU466& ppu, uint8_t priority);

@@ -5,7 +5,14 @@
 PNGSprite::PNGSprite() {}
 PNGSprite::~PNGSprite() {}
 
+// bool pallate_equal(const glm::u8vec4& a, const glm::u8vec4& b){
+//     const uint8_t epsilion = 10;  // choose something apprpriate.
 
+//     return    abs(a[0] - b[0]) < epsilion   
+//             && abs(a[1] - b[1]) < epsilion   
+//             && abs(a[2] - b[2]) < epsilion;
+// }
+    
 void PNGSprite::Initialize_PNG(PPU466& ppu, uint8_t priority) {
 	Fill_color_pallete(ppu, false);
 	Register_PNG(ppu, priority);
@@ -30,7 +37,8 @@ void PNGSprite::Register_Background(PPU466& ppu) {
 		for (uint8_t j = 0; j < width; j++)
 		{
 			uint8_t curr_table_index = background_tile_table_index + i * width + j;
-			assert(curr_table_index < 16 * 16);
+            // TODO: assert makes no sense here, uint8_t always less than 256
+			// assert(curr_table_index < (uint8_t)16 * 16);
 			PPU466::Tile& tile = tile_table[curr_table_index];
 			for (uint8_t x = 0; x < 8; x++)
 			{
@@ -64,14 +72,15 @@ void PNGSprite::Fill_color_pallete(PPU466& ppu, bool is_background) {
 	for (int i=0; i < pic.size(); i++) {
 		bool in_pallete = false;
 		for (int j=0; j <= pallete_index; j++) {
-			if (pic[i] == pallete[j]) {
+            
+			if (pic[i].w == 0 || pic[i] == pallete[j]) {
 				in_pallete = true;
 				break;
 			}
 		}
 		if (!in_pallete){ 
 			pallete[pallete_index++] = pic[i];
-			//std::cout << (int)pic[i][0] << " " << (int)pic[i][1] << " " << (int)pic[i][2] << " " << (int)pic[i][3] << std::endl;
+			std::cout << (int)pic[i][0] << " " << (int)pic[i][1] << " " << (int)pic[i][2] << " " << (int)pic[i][3] << std::endl;
 		}
 
 		// Max size of pallete is 4

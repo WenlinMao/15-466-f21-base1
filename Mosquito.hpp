@@ -24,6 +24,7 @@ struct Mosquito : Mode {
 	//----- game state -----
 	PNGSprite heart_pic;
 	PNGSprite background_pic;
+	PNGSprite flyswatter_pic;
 
 	//input tracking:
 	uint32_t scale = 2;

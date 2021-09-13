@@ -107,12 +107,12 @@ PlayMode::PlayMode() {
 	}
 
 
-	std::string png_path = "../heart.png"; 
+	std::string png_path = "../resource/heart.png"; 
 	heart_pic = PNGSprite(0, 0, glm::uvec2(124, 122));
 	PNGLoader::load(png_path, heart_pic);
 	heart_pic.Initialize_PNG(ppu, 0);
 
-	std::string background_path = "../frame.png";
+	std::string background_path = "../resource/frame.png";
 	background_pic = PNGSprite();
 	PNGLoader::load(background_path, background_pic);
 	background_pic.Initialize_Background(ppu);

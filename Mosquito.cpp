@@ -33,15 +33,19 @@ Mosquito::~Mosquito() {
 }
 
 void Mosquito::load_resource() {
-	std::string png_path = "../heart.png";
+	std::string png_path = "../resource/heart.png";
 	heart_pic = PNGSprite(0, 0, glm::uvec2(124, 122));
 	PNGLoader::load(png_path, heart_pic);
 	heart_pic.Initialize_PNG(ppu, 0);
 
-	std::string background_path = "../frame.png";
+	std::string background_path = "../resource/frame.png";
 	background_pic = PNGSprite();
 	PNGLoader::load(background_path, background_pic);
 	background_pic.Initialize_Background(ppu);
+
+	flyswatter_pic = PNGSprite(0, 0, glm::uvec2(124, 122));
+	PNGLoader::load("../resource/mos-white.png", flyswatter_pic);
+	flyswatter_pic.Initialize_PNG(ppu, 0);
 }
 
 void Mosquito::window_to_screen(glm::uvec2 const& window_size, glm::vec2& pos) {
@@ -51,8 +55,8 @@ void Mosquito::window_to_screen(glm::uvec2 const& window_size, glm::vec2& pos) {
 	pos /= static_cast<float>(scale);
 
 	pos += glm::vec2(ppu.ScreenWidth / 2.0f, ppu.ScreenHeight / 2.0f);
-	pos.x = std::clamp(pos.x, 0.0f, static_cast<float>(ppu.ScreenWidth));
-	pos.y = std::clamp(pos.y, 0.0f, static_cast<float>(ppu.ScreenHeight));
+	pos.x = glm::clamp(pos.x, 0.0f, static_cast<float>(ppu.ScreenWidth));
+	pos.y = glm::clamp(pos.y, 0.0f, static_cast<float>(ppu.ScreenHeight));
 
 	return;
 }
@@ -87,7 +91,7 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 }
 
 void Mosquito::update(float elapsed) {
-	heart_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
+	flyswatter_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
 }
 
 void Mosquito::draw(glm::uvec2 const& drawable_size) {
@@ -95,7 +99,7 @@ void Mosquito::draw(glm::uvec2 const& drawable_size) {
 	scale = std::max(1U, std::min(drawable_size.x / PPU466::ScreenWidth, drawable_size.y / PPU466::ScreenHeight));
 
 	for (uint32_t i = 0; i < 16; i++) {
-		ppu.sprites[i] = heart_pic.png_sprites[i];
+		ppu.sprites[i] = flyswatter_pic.png_sprites[i];
 
 		//std::cout << (int)ppu.sprites[i].x << " " << (int)ppu.sprites[i].y << std::endl;
 	}
