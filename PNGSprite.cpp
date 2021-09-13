@@ -54,8 +54,8 @@ void PNGSprite::Register_Background(PPU466& ppu) {
 
 	// Set ppu's background value
 	uint16_t background_value = background_color_pallete_index << 8;
-	for (int i=0; i<ppu.BackgroundHeight; i++) {
-		for (int j=0; j < ppu.BackgroundWidth; j++) {
+	for (uint32_t i=0; i<ppu.BackgroundHeight; i++) {
+		for (uint32_t j=0; j < ppu.BackgroundWidth; j++) {
 			int idx = i * ppu.BackgroundWidth + j;
 			int tile_idx = (i % 8) * 8 + (j % 8) + background_tile_table_index;
 			ppu.background[idx] = background_value | tile_idx;
@@ -69,9 +69,9 @@ void PNGSprite::Fill_color_pallete(PPU466& ppu, bool is_background) {
 	uint8_t idx = is_background ? background_color_pallete_index : color_pallete_index;
 	//std::cout << "color pallete idx = " << (int)idx << std::endl;
 	PPU466::Palette& pallete = ppu.palette_table[idx];
-	for (int i=0; i < pic.size(); i++) {
+	for (unsigned long int i=0; i < pic.size(); i++) {
 		bool in_pallete = false;
-		for (int j=0; j <= pallete_index; j++) {
+		for (uint8_t j=0; j <= pallete_index; j++) {
             
 			if (pic[i].w == 0 || pic[i] == pallete[j]) {
 				in_pallete = true;
@@ -111,9 +111,9 @@ void PNGSprite::Register_PNG(PPU466& ppu, uint8_t priority) {
 
 // Inspired by Oscar's Idea of only store and retrieve 4 colors, otherwise use the first one
 uint8_t PNGSprite::Find_color(const PPU466::Palette& pallete, const glm::u8vec4& color) {
-	for (int i=0; i<pallete.size(); i++) { 
+	for (unsigned long int i=0; i<pallete.size(); i++) { 
 		if (pallete[i] == color)
-			return i;
+			return static_cast<uint8_t>(i);
 	}
 	return 0;
 }
