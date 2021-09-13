@@ -8,8 +8,6 @@
 
 #include "PNGLoader.hpp"
 
-#define MOSQUITO_RESPAWN_TIME 2.0f
-
 struct Mosquito : Mode {
 	Mosquito();
 	virtual ~Mosquito();
@@ -37,6 +35,8 @@ struct Mosquito : Mode {
 
 	//----- game state -----
 	int frame_num = 0;
+	float mosquito_life_span = 0.5f;
+	float mosquito_respawn_time = 0.2f;
 	PNGSprite heart_pic;
 
 	PNGSprite background_pic;

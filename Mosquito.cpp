@@ -67,6 +67,9 @@ void Mosquito::load_resource() {
 	flyswatter_pic = PNGSprite(3, 64, glm::uvec2(124, 122));
 	PNGLoader::load("../resource/flyswatter32.png", flyswatter_pic);
 	flyswatter_pic.Initialize_PNG(ppu, 0);
+
+	for (auto& mos : mosquitos)
+		spawn_mosquito(mos);
 }
 
 void Mosquito::window_to_screen(glm::uvec2 const& window_size, glm::vec2& pos) {
@@ -107,15 +110,50 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 }
 
 void Mosquito::spawn_mosquito(MosquitoObject& mosquito) {
+	float x = static_cast<float>(rand() % 256);
+	float y = static_cast<float>(rand() % 240);
 
+	std::cout << "spawn x: " << x << "\n";
+	std::cout << "spawn y: " << y << "\n";
+
+	mosquito.spawn_pos = glm::vec2(x, y);
+	mosquito.mosquito_pic.Update_Pos(mosquito.spawn_pos);
+
+	mosquito.since_death = 0.0f;
+	mosquito.since_spawn = 0.0f;
+	mosquito.show_mosquito = true;
+	mosquito.show_blood = false;
 }
 
 void Mosquito::kill_mosquito(MosquitoObject& mosquito) {
+	mosquito.blood_pic.Update_Pos(mosquito.mosquito_pic.pos);
 
+	mosquito.since_death = 0.0f;
+	mosquito.since_spawn = 0.0f;
+	mosquito.show_mosquito = false;
+	mosquito.show_blood = true;
 }
 
 void Mosquito::update(float elapsed) {
 	flyswatter_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
+
+	for (auto& mos : mosquitos) {
+		if (mos.show_mosquito) {
+			mos.since_spawn += elapsed;
+
+			if (mos.since_spawn > mosquito_life_span) {
+				// Just for testing, should be deducting life
+				kill_mosquito(mos);
+			}
+		}
+		else if (mos.show_blood) {
+			mos.since_death += elapsed;
+
+			if (mos.since_death > mosquito_respawn_time) {
+				spawn_mosquito(mos);
+			}
+		}
+	}
 }
 
 void Mosquito::draw(glm::uvec2 const& drawable_size) {
