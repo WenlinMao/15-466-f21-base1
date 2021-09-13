@@ -97,7 +97,18 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 
 			std::cout << "x: " << mouse_pos.x << "\n";
 			std::cout << "y: " << mouse_pos.y << "\n";
+
+			for (auto& mos : mosquitos) {
+				if (glm::length(mouse_pos - mos.spawn_pos) < 15.0f) {
+					kill_mosquito(mos);
+					score++;
+				}
+			}
 		}
+	}
+
+	if (evt.type == SDL_MOUSEBUTTONUP && evt.button.button == SDL_BUTTON_LEFT) {
+		mouse_click = false;
 	}
 	
 	if (evt.type == SDL_MOUSEMOTION) {
@@ -113,8 +124,8 @@ void Mosquito::spawn_mosquito(MosquitoObject& mosquito) {
 	float x = static_cast<float>(rand() % 256);
 	float y = static_cast<float>(rand() % 240);
 
-	std::cout << "spawn x: " << x << "\n";
-	std::cout << "spawn y: " << y << "\n";
+	//std::cout << "spawn x: " << x << "\n";
+	//std::cout << "spawn y: " << y << "\n";
 
 	mosquito.spawn_pos = glm::vec2(x, y);
 	mosquito.mosquito_pic.Update_Pos(mosquito.spawn_pos);
@@ -138,12 +149,22 @@ void Mosquito::update(float elapsed) {
 	flyswatter_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
 
 	for (auto& mos : mosquitos) {
+		//if (mouse_click && glm::length(mouse_pos - mos.spawn_pos) < 5.0f) {
+		//	kill_mosquito(mos);
+		//	score++;
+		//	continue;
+		//}
+
 		if (mos.show_mosquito) {
 			mos.since_spawn += elapsed;
 
 			if (mos.since_spawn > mosquito_life_span) {
 				// Just for testing, should be deducting life
-				kill_mosquito(mos);
+				// kill_mosquito(mos);
+
+				score--;
+				life--;
+				spawn_mosquito(mos);
 			}
 		}
 		else if (mos.show_blood) {

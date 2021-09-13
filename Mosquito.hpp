@@ -34,9 +34,11 @@ struct Mosquito : Mode {
 	void kill_mosquito(MosquitoObject& mosquito);
 
 	//----- game state -----
-	int frame_num = 0;
-	float mosquito_life_span = 0.5f;
-	float mosquito_respawn_time = 0.2f;
+	uint16_t score = 0;
+	uint16_t life = 4;
+
+	float mosquito_life_span = 10.0f;
+	float mosquito_respawn_time = 1.0f;
 	PNGSprite heart_pic;
 
 	PNGSprite background_pic;
