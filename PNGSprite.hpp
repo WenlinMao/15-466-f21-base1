@@ -21,10 +21,23 @@
 class PNGSprite {
 public:
     PNGSprite();
+
+
+    /// <summary>
+    /// Constructor method
+    /// </summary>
+    /// <param name="c_idx">color pallet index</param>
+    /// <param name="t_idx">tile table index</param>
+    /// <param name="default_pos">starting default position</param>
     PNGSprite(uint8_t c_idx, uint8_t t_idx, glm::uvec2 default_pos) : 
         pos(default_pos), color_pallete_index(c_idx), tile_table_index(t_idx) {}
     ~PNGSprite();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="ppu"></param>
+    /// <param name="priority">Priority: 0:before background, 1:behind background</param>
     void Initialize_PNG(PPU466& ppu, uint8_t priority);
     void Initialize_Background(PPU466& ppu);
     void Update_Pos(glm::uvec2 new_pos);

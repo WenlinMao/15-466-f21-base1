@@ -34,7 +34,7 @@ Mosquito::~Mosquito() {
 
 void Mosquito::load_resource() {
 	std::string png_path = "../resource/heart.png";
-	heart_pic = PNGSprite(0, 0, glm::uvec2(124, 122));
+	heart_pic = PNGSprite(0, 0, glm::uvec2(24, 220));
 	PNGLoader::load(png_path, heart_pic);
 	heart_pic.Initialize_PNG(ppu, 0);
 
@@ -43,9 +43,13 @@ void Mosquito::load_resource() {
 	PNGLoader::load(background_path, background_pic);
 	background_pic.Initialize_Background(ppu);
 
-	flyswatter_pic = PNGSprite(0, 0, glm::uvec2(124, 122));
-	PNGLoader::load("../resource/mos-white.png", flyswatter_pic);
+	flyswatter_pic = PNGSprite(1, 16, glm::uvec2(124, 122));
+	PNGLoader::load("../resource/flyswatter32.png", flyswatter_pic);
 	flyswatter_pic.Initialize_PNG(ppu, 0);
+
+	mosquito_pic = PNGSprite(2, 32, glm::uvec2(124, 122));
+	PNGLoader::load("../resource/mos32.png", mosquito_pic);
+	mosquito_pic.Initialize_PNG(ppu, 0);
 }
 
 void Mosquito::window_to_screen(glm::uvec2 const& window_size, glm::vec2& pos) {
@@ -98,11 +102,16 @@ void Mosquito::draw(glm::uvec2 const& drawable_size) {
 	// scale
 	scale = std::max(1U, std::min(drawable_size.x / PPU466::ScreenWidth, drawable_size.y / PPU466::ScreenHeight));
 
+	uint32_t swatter_tile_pos = 16;
+	uint32_t mosquito_tile_pos = 32;
 	for (uint32_t i = 0; i < 16; i++) {
-		ppu.sprites[i] = flyswatter_pic.png_sprites[i];
-
+		ppu.sprites[i] = heart_pic.png_sprites[i];
+		ppu.sprites[i + swatter_tile_pos] = flyswatter_pic.png_sprites[i];
+		ppu.sprites[i + mosquito_tile_pos] = mosquito_pic.png_sprites[i];
 		//std::cout << (int)ppu.sprites[i].x << " " << (int)ppu.sprites[i].y << std::endl;
 	}
+
+	
 
 	//--- actually draw ---
 	ppu.draw(drawable_size);
