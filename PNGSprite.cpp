@@ -37,8 +37,6 @@ void PNGSprite::Register_Background(PPU466& ppu) {
 		for (uint8_t j = 0; j < width; j++)
 		{
 			uint8_t curr_table_index = background_tile_table_index + i * width + j;
-            // TODO: assert makes no sense here, uint8_t always less than 256
-			// assert(curr_table_index < (uint8_t)16 * 16);
 			PPU466::Tile& tile = tile_table[curr_table_index];
 			for (uint8_t x = 0; x < 8; x++)
 			{
@@ -73,7 +71,7 @@ void PNGSprite::Fill_color_pallete(PPU466& ppu, bool is_background) {
 		bool in_pallete = false;
 		for (uint8_t j=0; j <= pallete_index; j++) {
             
-			if (pic[i].w == 0 || pic[i] == pallete[j]) {
+			if (pic[i] == pallete[j]) {
 				in_pallete = true;
 				break;
 			}

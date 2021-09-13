@@ -48,8 +48,12 @@ void Mosquito::load_resource() {
 	flyswatter_pic.Initialize_PNG(ppu, 0);
 
 	mosquito_pic = PNGSprite(2, 32, glm::uvec2(124, 122));
-	PNGLoader::load("../resource/mos32.png", mosquito_pic);
+	PNGLoader::load("../resource/mos.png", mosquito_pic);
 	mosquito_pic.Initialize_PNG(ppu, 0);
+
+	blood_pic = PNGSprite(3, 48, glm::uvec2(124, 122));
+	PNGLoader::load("../resource/blood32.png", blood_pic);
+	blood_pic.Initialize_PNG(ppu, 0);
 }
 
 void Mosquito::window_to_screen(glm::uvec2 const& window_size, glm::vec2& pos) {
@@ -86,8 +90,8 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 		window_to_screen(window_size, mouse_pos);
 
 
-		std::cout << "x: " << mouse_pos.x << "\n";
-		std::cout << "y: " << mouse_pos.y << "\n";
+		// std::cout << "x: " << mouse_pos.x << "\n";
+		// std::cout << "y: " << mouse_pos.y << "\n";
 
 	}
 
@@ -95,7 +99,7 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 }
 
 void Mosquito::update(float elapsed) {
-	flyswatter_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
+	blood_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
 }
 
 void Mosquito::draw(glm::uvec2 const& drawable_size) {
@@ -104,10 +108,12 @@ void Mosquito::draw(glm::uvec2 const& drawable_size) {
 
 	uint32_t swatter_tile_pos = 16;
 	uint32_t mosquito_tile_pos = 32;
+	uint32_t blood_tile_pos = 48;
 	for (uint32_t i = 0; i < 16; i++) {
 		ppu.sprites[i] = heart_pic.png_sprites[i];
 		ppu.sprites[i + swatter_tile_pos] = flyswatter_pic.png_sprites[i];
 		ppu.sprites[i + mosquito_tile_pos] = mosquito_pic.png_sprites[i];
+		ppu.sprites[i + blood_tile_pos] = blood_pic.png_sprites[i];
 		//std::cout << (int)ppu.sprites[i].x << " " << (int)ppu.sprites[i].y << std::endl;
 	}
 

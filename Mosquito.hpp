@@ -26,6 +26,7 @@ struct Mosquito : Mode {
 	PNGSprite background_pic;
 	PNGSprite flyswatter_pic;
 	PNGSprite mosquito_pic;
+	PNGSprite blood_pic;
 
 	//input tracking:
 	uint32_t scale = 2;
