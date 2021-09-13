@@ -8,6 +8,8 @@
 
 #include "PNGLoader.hpp"
 
+#define MOSQUITO_RESPAWN_TIME 2.0f
+
 struct Mosquito : Mode {
 	Mosquito();
 	virtual ~Mosquito();
@@ -17,16 +19,33 @@ struct Mosquito : Mode {
 	virtual void update(float elapsed) override;
 	virtual void draw(glm::uvec2 const& drawable_size) override;
 
+	struct MosquitoObject {
+		glm::vec2 spawn_pos;
+		PNGSprite mosquito_pic;
+		PNGSprite blood_pic;
+		bool show_mosquito = false;
+		bool show_blood = false;
+		float since_death = 0.0f;
+		float since_spawn = 0.0f;
+	};
+
 	//help functions
 	void load_resource();
 	void window_to_screen(glm::uvec2 const& window_size, glm::vec2& pos);
+	void spawn_mosquito(MosquitoObject& mosquito);
+	void kill_mosquito(MosquitoObject& mosquito);
 
 	//----- game state -----
+	int frame_num = 0;
 	PNGSprite heart_pic;
+
 	PNGSprite background_pic;
 	PNGSprite flyswatter_pic;
-	PNGSprite mosquito_pic;
-	PNGSprite blood_pic;
+
+	std::array<MosquitoObject, 2> mosquitos;
+	
+	glm::vec2 mosquito_pos_0 = glm::vec2(64, 60);
+	glm::vec2 mosquito_pos_1 = glm::vec2(124, 60);
 
 	//input tracking:
 	uint32_t scale = 2;
