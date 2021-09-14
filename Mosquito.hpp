@@ -33,12 +33,13 @@ struct Mosquito : Mode {
 	void window_to_screen(glm::uvec2 const& window_size, glm::vec2& pos);
 	void spawn_mosquito(MosquitoObject& mosquito);
 	void kill_mosquito(MosquitoObject& mosquito);
+	void deduct_life();
 
 	//----- game state -----
 	uint16_t score = 0;
 	uint16_t life = 4;
 
-	float mosquito_life_span = 10.0f;
+	float mosquito_life_span = 3.0f;
 	float mosquito_respawn_time = 1.0f;
 	PNGSprite heart_pic;
 

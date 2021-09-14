@@ -154,16 +154,41 @@ void Mosquito::kill_mosquito(MosquitoObject& mosquito) {
 	mosquito.show_blood = true;
 }
 
+void Mosquito::deduct_life() {
+	life--;
+
+	switch (life) {
+		case 3:
+			heart_pic.png_sprites[2].y = 240;
+			heart_pic.png_sprites[3].y = 240;
+			heart_pic.png_sprites[6].y = 240;
+			heart_pic.png_sprites[7].y = 240;
+			break;
+		case 2:
+			heart_pic.png_sprites[0].y = 240;
+			heart_pic.png_sprites[1].y = 240;
+			heart_pic.png_sprites[4].y = 240;
+			heart_pic.png_sprites[5].y = 240;
+			break;
+		case 1:
+
+
+			heart_pic.png_sprites[10].y = 240;
+			heart_pic.png_sprites[11].y = 240;
+			heart_pic.png_sprites[14].y = 240;
+			heart_pic.png_sprites[15].y = 240;
+			break;
+		case 0:
+			// game over
+			std::cout << "Game Over" << "\n";
+			break;
+	}
+}
+
 void Mosquito::update(float elapsed) {
 	flyswatter_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
 
 	for (auto& mos : mosquitos) {
-		//if (mouse_click && glm::length(mouse_pos - mos.spawn_pos) < 5.0f) {
-		//	kill_mosquito(mos);
-		//	score++;
-		//	continue;
-		//}
-
 		if (mos.show_mosquito) {
 			mos.since_spawn += elapsed;
 
@@ -172,7 +197,7 @@ void Mosquito::update(float elapsed) {
 				// kill_mosquito(mos);
 
 				score--;
-				life--;
+				deduct_life();
 				spawn_mosquito(mos);
 			}
 		}
