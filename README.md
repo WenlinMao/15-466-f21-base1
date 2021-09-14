@@ -17,7 +17,7 @@ All sound clips are preprocessed with iMoive to fit the time stamp.
 
 How To Play:
 
-(TODO: describe the controls and (if needed) goals/strategy.)
+Use mouse to control the movement of the flyswatter. Left click on mouse would make the swatter trying to attack the mosquito once.
 
 Sources:
 
