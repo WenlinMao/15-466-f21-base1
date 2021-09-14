@@ -71,12 +71,12 @@ void Mosquito::load_resource() {
 	PNGLoader::load("../resource/flyswatter32.png", flyswatter_pic);
 	flyswatter_pic.Initialize_PNG(ppu, 0);
 
-	gg_pic1 = PNGSprite(4, 80, glm::uvec2(84, 122));
+	gg_pic1 = PNGSprite(4, 80, glm::uvec2(94, 122));
 	PNGLoader::load("../resource/gg.png", gg_pic1);
 	gg_pic1.Initialize_PNG(ppu, 0);
 	
 	gg_pic2 = gg_pic1;
-	gg_pic2.Update_Pos(glm::uvec2(164, 122));	
+	gg_pic2.Update_Pos(glm::uvec2(154, 122));	
 
 	SDL_LoadWAV("../resource/flyswatter_hit.wav", &wavSpec, &hitWavBuffer, &hitWavLength);
 	SDL_LoadWAV("../resource/flyswatter_miss.wav", &wavSpec, &missWavBuffer, &missWavLength);
@@ -107,13 +107,15 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 		// for hitting
 		auto keyEvent = evt.button.button;
 		if (keyEvent == SDL_BUTTON_LEFT) {
+			if (isGameOver) return false;
+
 			mouse_click = true;
 			mouse_pos = glm::vec2(static_cast<float>(evt.button.x), -static_cast<float>(evt.button.y));
 			window_to_screen(window_size, mouse_pos);	
 
 			bool isHit = false;
 			for (auto& mos : mosquitos) {
-				if (glm::length(mouse_pos - mos.spawn_pos) < 15.0f) {
+				if (glm::length(mouse_pos - mos.spawn_pos) < 20.0f ) {
 					kill_mosquito(mos);
 					score++;
 
@@ -156,7 +158,8 @@ void Mosquito::spawn_mosquito(MosquitoObject& mosquito) {
 	//std::cout << "spawn y: " << y << "\n";
 	int spawn_idx = rand() % 16;
 	while (spawn_idx == mosquitos[0].spawn_idx ||
-		spawn_idx == mosquitos[1].spawn_idx) {
+		spawn_idx == mosquitos[1].spawn_idx || 
+		spawn_idx == 12) {
 		spawn_idx = rand() % 16;
 	}
 
@@ -233,7 +236,6 @@ void Mosquito::change_game_pace(int dir) {
 void Mosquito::update(float elapsed) {
 	if (isGameOver) return;
 	 
-
 	flyswatter_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
 
 	for (auto& mos : mosquitos) {
@@ -268,43 +270,43 @@ void Mosquito::draw(glm::uvec2 const& drawable_size) {
 			ppu.sprites[i + 32].y = 240;
 			ppu.sprites[i + 48].y = 240;
 		}
-		return;
+		
+	} else {
+		// scale
+		scale = std::max(1U, std::min(drawable_size.x / PPU466::ScreenWidth, drawable_size.y / PPU466::ScreenHeight));
+
+		uint32_t heart_tile_pos = 48;
+		uint32_t mosquito_0_tile_pos = 0;
+		uint32_t mosquito_1_tile_pos = 16;
+		uint32_t swatter_tile_pos = 32;
+		for (uint32_t i = 0; i < 16; i++) {	
+			ppu.sprites[i + heart_tile_pos] = heart_pic.png_sprites[i];
+
+			if (mosquitos[0].show_mosquito) {
+				ppu.sprites[i + mosquito_0_tile_pos] = mosquitos[0].mosquito_pic.png_sprites[i];
+			}
+			else if (mosquitos[0].show_blood) {
+				ppu.sprites[i + mosquito_0_tile_pos] = mosquitos[0].blood_pic.png_sprites[i];
+			}
+			else {
+				ppu.sprites[i + mosquito_0_tile_pos].y = 240;
+			}
+
+			if (mosquitos[1].show_mosquito) {
+				ppu.sprites[i + mosquito_1_tile_pos] = mosquitos[1].mosquito_pic.png_sprites[i];
+			}
+			else if (mosquitos[1].show_blood) {
+				ppu.sprites[i + mosquito_1_tile_pos] = mosquitos[1].blood_pic.png_sprites[i];
+			}
+			else {
+				ppu.sprites[i + mosquito_1_tile_pos].y = 240;
+			}
+
+			ppu.sprites[i + swatter_tile_pos] = flyswatter_pic.png_sprites[i];
+			//std::cout << (int)ppu.sprites[i].x << " " << (int)ppu.sprites[i].y << std::endl;
+		}
 	}
-
-	// scale
-	scale = std::max(1U, std::min(drawable_size.x / PPU466::ScreenWidth, drawable_size.y / PPU466::ScreenHeight));
-
-	uint32_t heart_tile_pos = 48;
-	uint32_t mosquito_0_tile_pos = 0;
-	uint32_t mosquito_1_tile_pos = 16;
-	uint32_t swatter_tile_pos = 32;
-	for (uint32_t i = 0; i < 16; i++) {	
-		ppu.sprites[i + heart_tile_pos] = heart_pic.png_sprites[i];
-
-		if (mosquitos[0].show_mosquito) {
-			ppu.sprites[i + mosquito_0_tile_pos] = mosquitos[0].mosquito_pic.png_sprites[i];
-		}
-		else if (mosquitos[0].show_blood) {
-			ppu.sprites[i + mosquito_0_tile_pos] = mosquitos[0].blood_pic.png_sprites[i];
-		}
-		else {
-			ppu.sprites[i + mosquito_0_tile_pos].y = 240;
-		}
-
-		if (mosquitos[1].show_mosquito) {
-			ppu.sprites[i + mosquito_1_tile_pos] = mosquitos[1].mosquito_pic.png_sprites[i];
-		}
-		else if (mosquitos[1].show_blood) {
-			ppu.sprites[i + mosquito_1_tile_pos] = mosquitos[1].blood_pic.png_sprites[i];
-		}
-		else {
-			ppu.sprites[i + mosquito_1_tile_pos].y = 240;
-		}
-
-		ppu.sprites[i + swatter_tile_pos] = flyswatter_pic.png_sprites[i];
-		//std::cout << (int)ppu.sprites[i].x << " " << (int)ppu.sprites[i].y << std::endl;
-	}
-
+	
 	//--- actually draw ---
 	ppu.draw(drawable_size);
 }
