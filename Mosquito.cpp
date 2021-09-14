@@ -194,8 +194,8 @@ void Mosquito::change_game_pace(int dir) {
 	mosquito_life_span -= dir * 0.2f;
 	mosquito_respawn_time -= dir * 0.3f;
 
-	mosquito_life_span = std::clamp(mosquito_life_span, 1.5f, 4.0f);
-	mosquito_respawn_time = std::clamp(mosquito_respawn_time, 0.5f, 1.7f);
+	mosquito_life_span = glm::clamp(mosquito_life_span, 1.5f, 4.0f);
+	mosquito_respawn_time = glm::clamp(mosquito_respawn_time, 0.5f, 1.7f);
 }
 
 void Mosquito::update(float elapsed) {
