@@ -70,10 +70,16 @@ void Mosquito::load_resource() {
 	flyswatter_pic = PNGSprite(3, 64, glm::uvec2(124, 122));
 	PNGLoader::load("../resource/flyswatter32.png", flyswatter_pic);
 	flyswatter_pic.Initialize_PNG(ppu, 0);
+
+	gg_pic1 = PNGSprite(4, 80, glm::uvec2(84, 122));
+	PNGLoader::load("../resource/gg.png", gg_pic1);
+	gg_pic1.Initialize_PNG(ppu, 0);
 	
+	gg_pic2 = gg_pic1;
+	gg_pic2.Update_Pos(glm::uvec2(164, 122));	
+
 	SDL_LoadWAV("../resource/flyswatter_hit.wav", &wavSpec, &hitWavBuffer, &hitWavLength);
 	SDL_LoadWAV("../resource/flyswatter_miss.wav", &wavSpec, &missWavBuffer, &missWavLength);
-	SDL_LoadWAV("../resource/mos.wav", &wavSpec, &mosWavBuffer, &mosWavLength);
 
 	deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
 
@@ -190,6 +196,7 @@ void Mosquito::deduct_life() {
 		case 0:
 			// game over
 			std::cout << "Game Over" << "\n";
+			isGameOver = true;
 			break;
 	}
 }
@@ -209,9 +216,8 @@ void Mosquito::change_game_pace(int dir) {
 }
 
 void Mosquito::update(float elapsed) {
-	// if (SDL_QueueAudio(deviceId, mosWavBuffer, mosWavLength) < 0)
-	// 	std::cout << "miss sound error" << std::endl;
-	// SDL_PauseAudioDevice(deviceId, 0);
+	if (isGameOver) return;
+	 
 
 	flyswatter_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
 
@@ -240,6 +246,16 @@ void Mosquito::update(float elapsed) {
 }
 
 void Mosquito::draw(glm::uvec2 const& drawable_size) {
+	if (isGameOver) {
+		for (uint32_t i = 0; i < 16; i++) {
+			ppu.sprites[i] = gg_pic1.png_sprites[i];
+			ppu.sprites[i + 16] = gg_pic2.png_sprites[i];
+			ppu.sprites[i + 32].y = 240;
+			ppu.sprites[i + 48].y = 240;
+		}
+		return;
+	}
+
 	// scale
 	scale = std::max(1U, std::min(drawable_size.x / PPU466::ScreenWidth, drawable_size.y / PPU466::ScreenHeight));
 

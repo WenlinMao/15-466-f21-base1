@@ -43,7 +43,8 @@ struct Mosquito : Mode {
 	float mosquito_life_span = 3.0f;
 	float mosquito_respawn_time = 1.0f;
 	PNGSprite heart_pic;
-
+	PNGSprite gg_pic1;
+	PNGSprite gg_pic2;
 	PNGSprite background_pic;
 	PNGSprite flyswatter_pic;
 
@@ -62,8 +63,7 @@ struct Mosquito : Mode {
 	uint32_t missWavLength;
 	uint8_t * missWavBuffer;
 
-	uint32_t mosWavLength;
-	uint8_t * mosWavBuffer;
+	bool isGameOver = false;
 
 	//input tracking:
 	uint32_t scale = 2;
