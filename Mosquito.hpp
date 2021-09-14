@@ -19,6 +19,7 @@ struct Mosquito : Mode {
 	virtual void draw(glm::uvec2 const& drawable_size) override;
 
 	struct MosquitoObject {
+		int spawn_idx = -1;
 		glm::vec2 spawn_pos;
 		PNGSprite mosquito_pic;
 		PNGSprite blood_pic;

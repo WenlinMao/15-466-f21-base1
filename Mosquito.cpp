@@ -131,12 +131,23 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 }
 
 void Mosquito::spawn_mosquito(MosquitoObject& mosquito) {
-	float x = static_cast<float>(rand() % 256);
-	float y = static_cast<float>(rand() % 240);
+	//spawn_idx = rand() % 16;
+
+	//float x = static_cast<float>(rand() % 256);
+	//float y = static_cast<float>(rand() % 240);
 
 	//std::cout << "spawn x: " << x << "\n";
 	//std::cout << "spawn y: " << y << "\n";
+	int spawn_idx = rand() % 16;
+	while (spawn_idx == mosquitos[0].spawn_idx ||
+		spawn_idx == mosquitos[1].spawn_idx) {
+		spawn_idx = rand() % 16;
+	}
 
+	float x = static_cast<float>((28 + spawn_idx * 64) % 256);
+	float y = static_cast<float>(28 + (spawn_idx / 4) * 64);
+
+	mosquito.spawn_idx = spawn_idx;
 	mosquito.spawn_pos = glm::vec2(x, y);
 	mosquito.mosquito_pic.Update_Pos(mosquito.spawn_pos);
 
@@ -229,11 +240,12 @@ void Mosquito::draw(glm::uvec2 const& drawable_size) {
 	// scale
 	scale = std::max(1U, std::min(drawable_size.x / PPU466::ScreenWidth, drawable_size.y / PPU466::ScreenHeight));
 
-	uint32_t mosquito_0_tile_pos = 16;
-	uint32_t mosquito_1_tile_pos = 32;
-	uint32_t swatter_tile_pos = 48;
+	uint32_t heart_tile_pos = 48;
+	uint32_t mosquito_0_tile_pos = 0;
+	uint32_t mosquito_1_tile_pos = 16;
+	uint32_t swatter_tile_pos = 32;
 	for (uint32_t i = 0; i < 16; i++) {	
-		ppu.sprites[i] = heart_pic.png_sprites[i];
+		ppu.sprites[i + heart_tile_pos] = heart_pic.png_sprites[i];
 
 		if (mosquitos[0].show_mosquito) {
 			ppu.sprites[i + mosquito_0_tile_pos] = mosquitos[0].mosquito_pic.png_sprites[i];
