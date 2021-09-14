@@ -9,14 +9,7 @@ Screen Shot:
 
 ![Screen Shot](screenshot.png)
 
-How Your Asset Pipeline Works:\
-The whole pipeline works like this.\
-We create a new PNGSprite class, it contains a vector of colors, an array of sprites and other member variables.\
-First, we load a png using PNGLoader to load files into a vector of colors.\
-Then, we divide this vector into n tiles (8x8) and store them into the tile table in PPU.\
-After this, we create n sprites and store them together in the sprite array.\
-When we want to use this png in our game, we copy the array into PPU's sprites to make it show up.
-
+How Your Asset Pipeline Works:
 
 Sound pipeline are mainly created by SDL2 library. We used SDL2's loadWav function to load the sound effects.
 Then, we use SDL2's APIs to recognize the device and push the sound clip to the queue when the hit or miss effect is trigered.
@@ -24,11 +17,13 @@ All sound clips are preprocessed with iMoive to fit the time stamp.
 
 How To Play:
 
-(TODO: describe the controls and (if needed) goals/strategy.)
+Use mouse to control the movement of the flyswatter. Left click on mouse would make the swatter trying to attack the mosquito.
+There will be different sound feedback to indicate whether the swatter hits the mosquito or not. 
+Killed mosquito would leave a drip of blood on the screen.
+Failing to mosquito will detuct a 1/4 of total life. It would be a game over if total life is 0.
 
 Sources:
 
-* The pipeline ideas of using multiple tiles to form a png picture and structure is inspired Oscar
 * The hit and miss sound effects are all from https://freesound.org/.
 * All pixel art assets are created by https://www.pixilart.com/draw. 
 * blood is inspired by http://pixelartmaker.com/art/a3c176205942be4
