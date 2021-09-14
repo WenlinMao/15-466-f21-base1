@@ -52,9 +52,16 @@ struct Mosquito : Mode {
 
 	// sound
 	SDL_AudioSpec wavSpec;
-	uint32_t wavLength;
-	uint8_t *wavBuffer;
 	SDL_AudioDeviceID deviceId;
+
+	uint32_t hitWavLength;
+	uint8_t * hitWavBuffer;
+
+	uint32_t missWavLength;
+	uint8_t * missWavBuffer;
+
+	uint32_t mosWavLength;
+	uint8_t * mosWavBuffer;
 
 	//input tracking:
 	uint32_t scale = 2;

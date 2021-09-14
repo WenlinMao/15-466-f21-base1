@@ -30,6 +30,9 @@ Mosquito::Mosquito() {
 }
 
 Mosquito::~Mosquito() {
+	SDL_CloseAudioDevice(deviceId);
+	SDL_FreeWAV(hitWavBuffer);
+	SDL_FreeWAV(missWavBuffer);
 }
 
 void Mosquito::load_resource() {
@@ -68,7 +71,10 @@ void Mosquito::load_resource() {
 	PNGLoader::load("../resource/flyswatter32.png", flyswatter_pic);
 	flyswatter_pic.Initialize_PNG(ppu, 0);
 	
-	SDL_LoadWAV("../resource/test.wav", &wavSpec, &wavBuffer, &wavLength);
+	SDL_LoadWAV("../resource/flyswatter_hit.wav", &wavSpec, &hitWavBuffer, &hitWavLength);
+	SDL_LoadWAV("../resource/flyswatter_miss.wav", &wavSpec, &missWavBuffer, &missWavLength);
+	SDL_LoadWAV("../resource/mos.wav", &wavSpec, &mosWavBuffer, &mosWavLength);
+
 	deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
 
 	for (auto& mos : mosquitos)
@@ -99,19 +105,23 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 			mouse_pos = glm::vec2(static_cast<float>(evt.button.x), -static_cast<float>(evt.button.y));
 			window_to_screen(window_size, mouse_pos);	
 
-			int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
-			if (success < 0)
-				std::cout << "queue audio not success with code:" << success << std::endl;
-			else
-				std::cout << "queue audio indeed success" << std::endl;
-			SDL_PauseAudioDevice(deviceId, 0);
-
-
+			bool isHit = false;
 			for (auto& mos : mosquitos) {
 				if (glm::length(mouse_pos - mos.spawn_pos) < 15.0f) {
 					kill_mosquito(mos);
 					score++;
+					isHit = true;
+					
+					if (SDL_QueueAudio(deviceId, hitWavBuffer, hitWavLength) < 0)
+						std::cout << "hit sound error" << std::endl;
+					SDL_PauseAudioDevice(deviceId, 0);
 				}
+			}
+
+			if (!isHit) {
+				if (SDL_QueueAudio(deviceId, missWavBuffer, missWavLength) < 0)
+					std::cout << "miss sound error" << std::endl;
+				SDL_PauseAudioDevice(deviceId, 0);
 			}
 		}
 	}
@@ -155,6 +165,10 @@ void Mosquito::kill_mosquito(MosquitoObject& mosquito) {
 }
 
 void Mosquito::update(float elapsed) {
+	// if (SDL_QueueAudio(deviceId, mosWavBuffer, mosWavLength) < 0)
+	// 	std::cout << "miss sound error" << std::endl;
+	// SDL_PauseAudioDevice(deviceId, 0);
+
 	flyswatter_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
 
 	for (auto& mos : mosquitos) {
