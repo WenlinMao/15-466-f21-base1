@@ -1,8 +1,9 @@
-# (TODO: your game's title)
+# Whack-a-mosquito
 
-Author: (TODO: your name)
+Author: Wenlin Mao, Zi Wang, Martin Ke
 
-Design: (TODO: In two sentences or fewer, describe what is new and interesting about your game.)
+Design: Mosquitos are annoying, we neet to kill them. This game simulates the mosquito elimation process
+and guard our summer happiness. We use the flyswatter to kill mosquito and survive from a lot of mosquitos.
 
 Screen Shot:
 
@@ -10,13 +11,23 @@ Screen Shot:
 
 How Your Asset Pipeline Works:
 
-(TODO: describe the steps in your asset pipeline, from source files to tiles/backgrounds/whatever you upload to the PPU466.)
+Sound pipeline are mainly created by SDL2 library. We used SDL2's loadWav function to load the sound effects.
+Then, we use SDL2's APIs to recognize the device and push the sound clip to the queue when the hit or miss effect is trigered.
+All sound clips are preprocessed with iMoive to fit the time stamp.
 
 How To Play:
 
 (TODO: describe the controls and (if needed) goals/strategy.)
 
-Sources: (TODO: list a source URL for any assets you did not create yourself. Make sure you have a license for the asset.)
+Sources:
+
+* The hit and miss sound effects are all from https://freesound.org/.
+* All pixel art assets are created by https://www.pixilart.com/draw. 
+* blood is inspired by http://pixelartmaker.com/art/a3c176205942be4
+* mosquito is inspired by https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngwing.com%2Fen%2Ffree-png-hfxck&psig=AOvVaw13IpFw5JjXX2UF5az_gxER&ust=1631672284637000&source=images&cd=vfe&ved=0CAwQjhxqFwoTCLj13Yqz_fICFQAAAAAdAAAAABAD
+* flyswatter is inspired by https://dandydungeon.fandom.com/wiki/Fly_Swatter
+* heart is inspired by https://www.vectorstock.com/royalty-free-vector/pixel-art-heart-love-color-icon-valentine-vector-15134146
+* G character is inspired by http://pixelartmaker.com/art/de49826ec5e9dff
 
 This game was built with [NEST](NEST.md).
 
