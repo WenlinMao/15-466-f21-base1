@@ -34,7 +34,8 @@ int main(int argc, char **argv) {
 
 	//Initialize SDL library:
 	SDL_Init(SDL_INIT_VIDEO);
-
+	SDL_Init(SDL_INIT_AUDIO);
+	
 	//Ask for an OpenGL context version 3.3, core profile, enable debug:
 	SDL_GL_ResetAttributes();
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);

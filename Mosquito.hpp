@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <deque>
+#include <SDL.h>
 
 #include "PNGLoader.hpp"
 
@@ -27,6 +28,12 @@ struct Mosquito : Mode {
 	PNGSprite flyswatter_pic;
 	PNGSprite mosquito_pic;
 	PNGSprite blood_pic;
+
+	// sound
+	SDL_AudioSpec wavSpec;
+	uint32_t wavLength;
+	uint8_t *wavBuffer;
+	SDL_AudioDeviceID deviceId;
 
 	//input tracking:
 	uint32_t scale = 2;

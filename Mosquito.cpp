@@ -54,6 +54,9 @@ void Mosquito::load_resource() {
 	blood_pic = PNGSprite(3, 48, glm::uvec2(124, 122));
 	PNGLoader::load("../resource/blood32.png", blood_pic);
 	blood_pic.Initialize_PNG(ppu, 0);
+	
+	SDL_LoadWAV("../resource/test.wav", &wavSpec, &wavBuffer, &wavLength);
+	deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
 }
 
 void Mosquito::window_to_screen(glm::uvec2 const& window_size, glm::vec2& pos) {
@@ -81,6 +84,13 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 
 			//std::cout << "x: " << mouse_pos.x << "\n";
 			//std::cout << "y: " << mouse_pos.y << "\n";
+			std::cout << deviceId << std::endl;
+			int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+			if (success < 0)
+				std::cout << "queue audio not success with code:" << success << std::endl;
+			else
+				std::cout << "queue audio indeed success" << std::endl;
+			SDL_PauseAudioDevice(deviceId, 0);
 		}
 	}
 	
