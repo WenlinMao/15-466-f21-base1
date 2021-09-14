@@ -34,6 +34,7 @@ struct Mosquito : Mode {
 	void spawn_mosquito(MosquitoObject& mosquito);
 	void kill_mosquito(MosquitoObject& mosquito);
 	void deduct_life();
+	void change_game_pace(int dir);
 
 	//----- game state -----
 	uint16_t score = 0;

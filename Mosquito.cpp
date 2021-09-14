@@ -111,6 +111,7 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 				if (glm::length(mouse_pos - mos.spawn_pos) < 15.0f) {
 					kill_mosquito(mos);
 					score++;
+					change_game_pace(1);
 				}
 			}
 		}
@@ -171,8 +172,6 @@ void Mosquito::deduct_life() {
 			heart_pic.png_sprites[5].y = 240;
 			break;
 		case 1:
-
-
 			heart_pic.png_sprites[10].y = 240;
 			heart_pic.png_sprites[11].y = 240;
 			heart_pic.png_sprites[14].y = 240;
@@ -183,6 +182,20 @@ void Mosquito::deduct_life() {
 			std::cout << "Game Over" << "\n";
 			break;
 	}
+}
+
+
+/// <param name="dir">Takes either -1 or 1: 1: getting score, shortening timespans;
+/// -1: losing score, increasing timespan</param>
+void Mosquito::change_game_pace(int dir) {
+	/*mosquito_life_span = std::clamp(3.0f / (static_cast<float>(score) / 2.0f + 1.0f), 1.5f, 3.0f);
+	mosquito_respawn_time = std::clamp(1.0f / (static_cast<float>(score) / 2.0f + 1.0f), 0.5f, 1.0f);*/
+	assert(dir == 1 || dir == -1);
+	mosquito_life_span -= dir * 0.2f;
+	mosquito_respawn_time -= dir * 0.3f;
+
+	mosquito_life_span = std::clamp(mosquito_life_span, 1.5f, 4.0f);
+	mosquito_respawn_time = std::clamp(mosquito_respawn_time, 0.5f, 1.7f);
 }
 
 void Mosquito::update(float elapsed) {
@@ -197,6 +210,7 @@ void Mosquito::update(float elapsed) {
 				// kill_mosquito(mos);
 
 				score--;
+				change_game_pace(-1);
 				deduct_life();
 				spawn_mosquito(mos);
 			}
