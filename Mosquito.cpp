@@ -191,6 +191,10 @@ void Mosquito::deduct_life() {
 		case 0:
 			// game over
 			std::cout << "Game Over" << "\n";
+			heart_pic.png_sprites[8].y = 240;
+			heart_pic.png_sprites[9].y = 240;
+			heart_pic.png_sprites[12].y = 240;
+			heart_pic.png_sprites[13].y = 240;
 			break;
 	}
 }
@@ -270,8 +274,6 @@ void Mosquito::draw(glm::uvec2 const& drawable_size) {
 		ppu.sprites[i + swatter_tile_pos] = flyswatter_pic.png_sprites[i];
 		//std::cout << (int)ppu.sprites[i].x << " " << (int)ppu.sprites[i].y << std::endl;
 	}
-
-	
 
 	//--- actually draw ---
 	ppu.draw(drawable_size);
