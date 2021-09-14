@@ -110,11 +110,12 @@ bool Mosquito::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 				if (glm::length(mouse_pos - mos.spawn_pos) < 15.0f) {
 					kill_mosquito(mos);
 					score++;
+
 					isHit = true;
-					
 					if (SDL_QueueAudio(deviceId, hitWavBuffer, hitWavLength) < 0)
 						std::cout << "hit sound error" << std::endl;
 					SDL_PauseAudioDevice(deviceId, 0);
+					change_game_pace(1);
 				}
 			}
 
@@ -164,6 +165,49 @@ void Mosquito::kill_mosquito(MosquitoObject& mosquito) {
 	mosquito.show_blood = true;
 }
 
+void Mosquito::deduct_life() {
+	life--;
+
+	switch (life) {
+		case 3:
+			heart_pic.png_sprites[2].y = 240;
+			heart_pic.png_sprites[3].y = 240;
+			heart_pic.png_sprites[6].y = 240;
+			heart_pic.png_sprites[7].y = 240;
+			break;
+		case 2:
+			heart_pic.png_sprites[0].y = 240;
+			heart_pic.png_sprites[1].y = 240;
+			heart_pic.png_sprites[4].y = 240;
+			heart_pic.png_sprites[5].y = 240;
+			break;
+		case 1:
+			heart_pic.png_sprites[10].y = 240;
+			heart_pic.png_sprites[11].y = 240;
+			heart_pic.png_sprites[14].y = 240;
+			heart_pic.png_sprites[15].y = 240;
+			break;
+		case 0:
+			// game over
+			std::cout << "Game Over" << "\n";
+			break;
+	}
+}
+
+
+/// <param name="dir">Takes either -1 or 1: 1: getting score, shortening timespans;
+/// -1: losing score, increasing timespan</param>
+void Mosquito::change_game_pace(int dir) {
+	/*mosquito_life_span = std::clamp(3.0f / (static_cast<float>(score) / 2.0f + 1.0f), 1.5f, 3.0f);
+	mosquito_respawn_time = std::clamp(1.0f / (static_cast<float>(score) / 2.0f + 1.0f), 0.5f, 1.0f);*/
+	assert(dir == 1 || dir == -1);
+	mosquito_life_span -= dir * 0.2f;
+	mosquito_respawn_time -= dir * 0.3f;
+
+	mosquito_life_span = glm::clamp(mosquito_life_span, 1.5f, 4.0f);
+	mosquito_respawn_time = glm::clamp(mosquito_respawn_time, 0.5f, 1.7f);
+}
+
 void Mosquito::update(float elapsed) {
 	// if (SDL_QueueAudio(deviceId, mosWavBuffer, mosWavLength) < 0)
 	// 	std::cout << "miss sound error" << std::endl;
@@ -172,12 +216,6 @@ void Mosquito::update(float elapsed) {
 	flyswatter_pic.Update_Pos(static_cast<glm::uvec2>(mouse_pos));
 
 	for (auto& mos : mosquitos) {
-		//if (mouse_click && glm::length(mouse_pos - mos.spawn_pos) < 5.0f) {
-		//	kill_mosquito(mos);
-		//	score++;
-		//	continue;
-		//}
-
 		if (mos.show_mosquito) {
 			mos.since_spawn += elapsed;
 
@@ -186,7 +224,8 @@ void Mosquito::update(float elapsed) {
 				// kill_mosquito(mos);
 
 				score--;
-				life--;
+				change_game_pace(-1);
+				deduct_life();
 				spawn_mosquito(mos);
 			}
 		}

@@ -5,7 +5,7 @@
  *
  * @author Wenlin Mao
  * Contact: wenlinm@andrew.cmu.edu
- *
+ * The Asset pipeline is inspired by Oscar's idea of using multiple tiles to form a png
  */
 #pragma once
 
